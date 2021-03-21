@@ -1,3 +1,5 @@
+
+
 // create the whole parent div
 const wholediv = document.createElement('div')
 wholediv.style.background = "url(space.gif)"
@@ -133,6 +135,25 @@ resultParaNum.style.fontSize = "25px"
 resultParaNum.style.color = "white"
 resultParaNum.innerHTML = 'hello'
 
+
+button.addEventListener('click', ()=>{
+    const selectedObj = JSON.parse(planetSelect.value)
+    if(!massInput.value){
+        resultPara.innerHTML = `Mass is required`
+        resultParaNum.innerHTML = ''
+    }else{
+        resultPara.innerHTML = `The Weight of Object on the ${selectedObj.name}`
+        resultParaNum.innerHTML = `${ Math.floor( (+selectedObj.gravity * +massInput.value) * 1000) / 1000 }`
+    }
+    
+    planetImg.setAttribute('src',`${selectedObj.name}.png`)
+    console.log(selectedObj.name);
+    console.log(selectedObj.gravity);
+    console.log(typeof +selectedObj.gravity);
+    
+})
+
+
 resultBody.appendChild(resultPara)
 resultBody.appendChild(resultParaNum)
 
@@ -151,15 +172,3 @@ wholediv.appendChild(wholeResultBody)
 document.body.appendChild(wholediv)
 
 
-
-button.addEventListener('click', ()=>{
-    const selectedObj = JSON.parse(planetSelect.value)
-
-    resultPara.innerHTML = `The Weight of Object on the ${selectedObj.name}`
-    resultParaNum.innerHTML = `${ Math.floor( (+selectedObj.gravity * +massInput.value) * 1000) / 1000 }`
-    planetImg.setAttribute('src',`${selectedObj.name}.png`)
-    console.log(selectedObj.name);
-    console.log(selectedObj.gravity);
-    console.log(typeof +selectedObj.gravity);
-    
-})
