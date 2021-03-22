@@ -7,19 +7,19 @@ function getTopN(objArr,n=10){
 }
 
 // top n elem of population
-function findTop10Population(objArr,n=10){
+function retrieveTopNObjectsByKey(objArr,key,n=10){
     const sortedArr = objArr.slice()
-    sortedArr.sort((a,b)=> b.population- a.population)
+    sortedArr.sort((a,b)=> b[key] - a[key])
     return getTopN(sortedArr,n)
 }
 
 // calculate population size
-function calculatePopulation(objArr){
+function worldPopulation(objArr){
     return objArr.reduce( (acc,cur)=> acc + cur.population,0 )
 }
 
 // create count of distinct countries
-function countAppearanceOfDistinctLangs(objArr){
+function countDistinctLanguageAppearance(objArr){
     let languages = {}
     objArr.reduce((acc,cur)=>{
         if(cur.languages.length>=1){
@@ -36,6 +36,11 @@ function countAppearanceOfDistinctLangs(objArr){
     
 
     return Object.entries(languages).sort((a,b)=> b[1] - a[1])
+}
+
+// calculate percent of country poplution
+function calculatePercent(population,wholeWorldPopulation){
+    return Math.floor( (population/wholeWorldPopulation)*100 )
 }
 
 // create progress bar
@@ -80,10 +85,7 @@ function createProgress(leftText,progress,rightText,color){
     return progressRow
 }
 
-// calculate percent of country poplution
-function countryPopulationPercent(population,allpopulation){
-    return Math.floor( (population/allpopulation)*100 )
-}
+
 
 
 const populationsBtn = document.querySelector("#population")
@@ -95,16 +97,16 @@ populationsBtn.addEventListener('click', ()=>{
 
     containerProgress.innerHTML = ''
 
-    let top10population = findTop10Population(countries,10)
-    const allpopulation = calculatePopulation(countries)
+    let top10population = retrieveTopNObjectsByKey(countries,'population',10)
+    const wholeWorldPopulation = worldPopulation(countries)
     let progress;
 
-    progress = createProgress("World", countryPopulationPercent(allpopulation,allpopulation), allpopulation, "#FFC107" )
+    progress = createProgress("World", calculatePercent(wholeWorldPopulation,wholeWorldPopulation), wholeWorldPopulation, "#FFC107" )
     containerProgress.appendChild(progress)
 
     top10population.forEach(element => {
         console.log(element);
-        progress = createProgress(element.name, countryPopulationPercent(element.population,allpopulation), element.population, "#FFC107" )
+        progress = createProgress(element.name, calculatePercent(element.population,wholeWorldPopulation), element.population, "#FFC107" )
         containerProgress.appendChild(progress)
     });
 })
@@ -114,13 +116,13 @@ languagesBtn.addEventListener('click', ()=>{
     const containerProgress = document.querySelector(".container")
 
     containerProgress.innerHTML = ''
-    const langs = countAppearanceOfDistinctLangs(countries)
+    const langs = countDistinctLanguageAppearance(countries)
     let top10langs = getTopN( langs,10 )
     const alllangs = langs.length
     let progress;
 
     top10langs.forEach(element => {
-        progress = createProgress(element[0], countryPopulationPercent(element[1],alllangs), element[1], "#FFC107" )
+        progress = createProgress(element[0], calculatePercent(element[1],alllangs), element[1], "#FFC107" )
         containerProgress.appendChild(progress)
     });
 })
